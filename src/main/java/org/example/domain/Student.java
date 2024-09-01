@@ -1,9 +1,12 @@
 package org.example.domain;
 
+import jakarta.persistence.OneToMany;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.example.enumiration.TypeOfCollege;
 import org.example.enumiration.TypeOfMajor;
+
+import java.util.Set;
 
 @AllArgsConstructor
 @NoArgsConstructor

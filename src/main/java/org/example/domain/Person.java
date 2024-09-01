@@ -9,6 +9,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
+import org.example.enumiration.City;
 
 import java.time.LocalDate;
 
@@ -28,4 +29,6 @@ public class Person {
     private String serialNumber;
     private String nationalCode;
     private LocalDate birthDay;
+    private City city;
+    private Person spouse;
 }

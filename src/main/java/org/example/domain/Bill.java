@@ -19,4 +19,6 @@ public class Bill {
 
     private Loan loan;
 
+    private Boolean isPaid;
+
 }

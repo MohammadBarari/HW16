@@ -7,6 +7,7 @@ import org.example.enumiration.TypeOfLoan;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Set;
 
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 @AllArgsConstructor
@@ -22,6 +23,7 @@ public class Loan {
 
     private Integer countsInYear; //todo : must be 1 at a year at max
 
+    @ManyToOne
     private Student student;
 
     private String cv22; //todo : has a fourNumber limit
@@ -31,7 +33,8 @@ public class Loan {
     private LocalDate cartExpiryDate;
 
     @OneToMany
-    private Bill bill;
+    private Set<Bill> bill;
 
     private TypeOfLoan typeOfLoan;
+
 }
