@@ -30,4 +30,6 @@ public class Person {
     private String nationalCode;
     private LocalDate birthDay;
     private City city;
+    private Boolean isMarried;
+    private String spouseNationalCode;
 }

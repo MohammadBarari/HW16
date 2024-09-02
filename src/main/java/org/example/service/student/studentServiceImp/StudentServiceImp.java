@@ -11,8 +11,10 @@ import org.example.enumiration.TypeOfLoan;
 import org.example.enumiration.TypeOfMajor;
 import org.example.exeptions.*;
 import org.example.repository.student.StudentRepository;
-import org.example.service.loan.tuitionFeeLoan.TuitionFeeLoan;
-import org.example.service.loan.tuitionFeeLoan.imp.TuitionFeeLoanImp;
+import org.example.service.loan.studentLoan.StudentLoanService;
+import org.example.service.loan.studentLoan.imp.StudentLoanServiceImp;
+import org.example.service.loan.tuitionFeeLoan.TuitionFeeLoanService;
+import org.example.service.loan.tuitionFeeLoan.imp.TuitionFeeLoanServiceImp;
 import org.example.service.student.StudentService;
 
 import java.time.LocalDate;
@@ -22,8 +24,8 @@ import java.util.function.Function;
 
 public class StudentServiceImp implements StudentService {
     StudentRepository studentRepository;
-    private TuitionFeeLoan tuitionFeeLoan = new TuitionFeeLoanImp();
-
+    private TuitionFeeLoanService tuitionFeeLoanService = new TuitionFeeLoanServiceImp();
+    private StudentLoanService studentLoanService =  new StudentLoanServiceImp();
 
     @Override
     public void register(StudentSignUpDto student) throws DuplicateStudentException {
@@ -85,14 +87,50 @@ public class StudentServiceImp implements StudentService {
         switch (loanDto.typeOfLoan()){
             case TUITION -> {
                 if (validateStudentForTuitionLoan(student)){
-                    tuitionFeeLoan.getTuitionFeeLoan(student,loanDto);
+                    tuitionFeeLoanService.getTuitionFeeLoan(student,loanDto);
                 }
             }
             case STUDENTLOAN -> {
+                if (validateStudentForStudentLoan(student)){
+                    studentLoanService.getStudentLoan(student,loanDto);
+                }
+            }
+            case HOUSING -> {
 
             }
         }
     }
+
+    @Override
+    public void getHousingLoan(StudentHousingLoanDto studentHousingLoanDto, LoanDto loanDto) {
+
+    }
+
+    @Override
+    public boolean validateStudentForGettingHousingLoan(Student student) throws NotQulifiedForThisLoan {
+        if (student.getIsMarried() && !student.getIsIntHotel() ){
+            return true;
+        }
+        throw new NotQulifiedForThisLoan();
+    }
+    private Student
+    private boolean checkSpouse(Student student){
+        Student spouse = findByNationalCode(student.getSpouseNationalCode());
+        if (spouse.getStudentNumber() == null){
+            return true;
+        }
+        if ()
+
+
+        return false;
+    }
+
+    @Override
+    public Student findByNationalCode(String nationalCode) {
+        //todo: must fix this class
+        return studentRepository.findStudentByNationalCode(nationalCode);
+    }
+
     public Integer checkAllTypeOfStudentMajorType(Student student){
         if (student.getTypeOfMajor() == TypeOfMajor.KARSHENASIARSHADPEYVASTE
                 ||student.getTypeOfMajor() == TypeOfMajor.KARSHENASIARSHADNAPEYVASTE
@@ -114,8 +152,6 @@ public class StudentServiceImp implements StudentService {
         }
         return 0;
     }
-
-
     @Override
     public boolean validateStudentForTuitionLoan(Student student) throws NotQulifiedForThisLoan,
             ErrorItsNotTimeOfSignUp, CollegeFinished {
@@ -147,7 +183,7 @@ public class StudentServiceImp implements StudentService {
         return true;
     }
     private boolean checkIfNotDuplicateLoanForTuition(Student student) throws NotQulifiedForThisLoan {
-        List<Loan> loans = tuitionFeeLoan.findLoan(student);
+        List<Loan> loans = tuitionFeeLoanService.findLoan(student);
         //todo : it will find all loans that student got
         for (Loan loan : loans) {
             if (loan.getTypeOfLoan() == TypeOfLoan.HOUSING){

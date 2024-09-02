@@ -18,10 +18,22 @@ public interface StudentService {
     void getLoan(Student student , LoanDto loanDto) throws NotQulifiedForThisLoan,
             NotQulifiedForThisLoan, ErrorItsNotTimeOfSignUp, CollegeFinished;
 
+    void getHousingLoan(StudentHousingLoanDto studentHousingLoanDto , LoanDto loanDto);
+
+    boolean validateStudentForGettingHousingLoan(Student student) throws NotQulifiedForThisLoan;
+
     boolean validateStudentForTuitionLoan(Student student)throws NotQulifiedForThisLoan
             , ErrorItsNotTimeOfSignUp, CollegeFinished;
-    //todo : boolean validateStudentForStudentLoan(Student student);
+
+    boolean validateStudentForStudentLoan(Student student) throws
+            CollegeFinished, NotQulifiedForThisLoan, ErrorItsNotTimeOfSignUp;
+
     // todo : boolean validateStudentForHousingLoan(Student student);
 
     void PayTheBills(Student student);
+
+    //todo: check whether if student is in three group that the question needed
+    Integer checkAllTypeOfStudentMajorType(Student student);
+
+    Student findByNationalCode(String nationalCode);
 }

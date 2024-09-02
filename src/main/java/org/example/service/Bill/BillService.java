@@ -11,4 +11,5 @@ public interface BillService {
     Bill findById(Integer id);
     Bill updateBill(Bill bill);
     Set<Bill> billCalculator(Long price , LocalDate timeOfGet);
+    Set<Bill> billsCalculator(Long price , LocalDate dateOfGet);
 }

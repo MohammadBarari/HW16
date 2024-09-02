@@ -22,4 +22,5 @@ public class Student extends Person{
     private String userName;
     private String password;
     private TypeOfCollege typeOfCollege;
+    private Boolean isIntHotel;
 }
