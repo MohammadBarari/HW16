@@ -6,8 +6,6 @@ import org.example.dto.LoanDto;
 import org.example.service.loan.BaseLoan;
 
 public interface TuitionFeeLoan extends BaseLoan {
-    void registerStudent();
-    boolean validateStudent(Student student);
     void getTuitionFeeLoan(Student student , LoanDto loanDto);
     void sendMoneyToStudent(Student student , Long amount);
 }

@@ -4,6 +4,7 @@ import org.example.domain.Student;
 import org.example.dto.LoanDto;
 import org.example.dto.StudentLoginDto;
 import org.example.dto.StudentSignUpDto;
+import org.example.exeptions.CollegeFinished;
 import org.example.exeptions.ErrorItsNotTimeOfSignUp;
 import org.example.exeptions.NotQulifiedForThisLoan;
 
@@ -15,11 +16,12 @@ public interface StudentService {
     Student login(StudentLoginDto student)throws Exception;
 
     void getLoan(Student student , LoanDto loanDto) throws NotQulifiedForThisLoan,
-            NotQulifiedForThisLoan, ErrorItsNotTimeOfSignUp;
+            NotQulifiedForThisLoan, ErrorItsNotTimeOfSignUp, CollegeFinished;
 
     boolean validateStudentForTuitionLoan(Student student)throws NotQulifiedForThisLoan
-            , ErrorItsNotTimeOfSignUp;
+            , ErrorItsNotTimeOfSignUp, CollegeFinished;
     //todo : boolean validateStudentForStudentLoan(Student student);
     // todo : boolean validateStudentForHousingLoan(Student student);
 
+    void PayTheBills(Student student);
 }

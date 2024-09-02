@@ -3,6 +3,7 @@ package org.example.domain;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -21,4 +22,5 @@ public class Bill {
 
     private Boolean isPaid;
 
+    private LocalDateTime timeOfPayment;
 }

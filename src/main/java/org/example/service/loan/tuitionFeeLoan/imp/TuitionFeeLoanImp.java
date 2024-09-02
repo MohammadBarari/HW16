@@ -9,6 +9,8 @@ import org.example.enumiration.TypeOfMajor;
 import org.example.repository.loan.TuitionFeeLoan.TuitionFeeLoanRepository;
 import org.example.service.loan.BaseLoanImp;
 import org.example.service.loan.tuitionFeeLoan.TuitionFeeLoan;
+import org.example.service.student.StudentService;
+import org.example.service.student.studentServiceImp.StudentServiceImp;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -18,15 +20,8 @@ import java.util.Set;
 
 public class TuitionFeeLoanImp extends BaseLoanImp implements TuitionFeeLoan {
     TuitionFeeLoanRepository tuitionFeeLoanRepository;
-    @Override
-    public void registerStudent() {
 
-    }
-    @Override
-    public boolean validateStudent(Student student) {
-        return false;
-    }
-
+    private StudentService studentServiceImp= new StudentServiceImp();
     @Override
     public void getTuitionFeeLoan(Student student , LoanDto loanDto) {
         //todo : for example we send a loan to the student cart with its cvv2 and cartNumber and its cartExpiresDate and we save its cart information in loan Entity
@@ -80,7 +75,6 @@ public class TuitionFeeLoanImp extends BaseLoanImp implements TuitionFeeLoan {
     }
 
     private Set<Bill> billsCalculator(Long price , LocalDate dateOfGet){
-        LocalDate timeOfGet = LocalDate.parse("2022-10-25");
         Long eachYear = price/5;
         Set<Bill> bills = new HashSet<>();
         List<Long> eachyears = new ArrayList<>();

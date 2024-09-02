@@ -1,6 +1,5 @@
 package org.example.service.student.studentServiceImp;
 
-import net.bytebuddy.asm.Advice;
 import org.example.Base.DateOfOpenAndCloseforLoanSignUp;
 import org.example.domain.Loan;
 import org.example.domain.Student;
@@ -16,12 +15,9 @@ import org.example.service.loan.tuitionFeeLoan.TuitionFeeLoan;
 import org.example.service.loan.tuitionFeeLoan.imp.TuitionFeeLoanImp;
 import org.example.service.student.StudentService;
 
-import java.time.DateTimeException;
 import java.time.LocalDate;
-import java.util.Date;
 import java.util.List;
 import java.util.Random;
-import java.util.RandomAccess;
 import java.util.function.Function;
 
 public class StudentServiceImp implements StudentService {
@@ -85,40 +81,105 @@ public class StudentServiceImp implements StudentService {
 
     @Override
     public void getLoan(Student student, LoanDto loanDto) throws NotQulifiedForThisLoan,
-             ErrorItsNotTimeOfSignUp {
-        if (validateStudentForTuitionLoan(student)){
-            tuitionFeeLoan.getTuitionFeeLoan(student,loanDto);
+            ErrorItsNotTimeOfSignUp, CollegeFinished {
+        switch (loanDto.typeOfLoan()){
+            case TUITION -> {
+                if (validateStudentForTuitionLoan(student)){
+                    tuitionFeeLoan.getTuitionFeeLoan(student,loanDto);
+                }
+            }
+            case STUDENTLOAN -> {
+
+            }
         }
     }
+    public Integer checkAllTypeOfStudentMajorType(Student student){
+        if (student.getTypeOfMajor() == TypeOfMajor.KARSHENASIARSHADPEYVASTE
+                ||student.getTypeOfMajor() == TypeOfMajor.KARSHENASIARSHADNAPEYVASTE
+                ||student.getTypeOfMajor() == TypeOfMajor.KRDANI
+        ){
+            return 1;
+        } else if (
+                student.getTypeOfMajor() == TypeOfMajor.DOKTORAHERFEE
+                        ||
+                        student.getTypeOfMajor() == TypeOfMajor.DOKTORAPEYVASTE
+                        ||
+                        student.getTypeOfMajor() == TypeOfMajor.KARSHENASIARSHADPEYVASTE
+        ) {
+            return 2;
+        } else if (
+                student.getTypeOfMajor() == TypeOfMajor.DOKTORANAPEVASTE
+        ) {
+            return 3;
+        }
+        return 0;
+    }
+
 
     @Override
     public boolean validateStudentForTuitionLoan(Student student) throws NotQulifiedForThisLoan,
             ErrorItsNotTimeOfSignUp, CollegeFinished {
         //todo: must do validating student here !!
-        LocalDate localDate = LocalDate.now();
-        if (ifCollegeIsPaid(student) && checkDate(localDate) && studentStillInCollege(student)
-        && checkIfNotDuplicateLoan(student)){
+        if (ifCollegeIsPaid(student) && checkStudentThatCanGetLoan(student)){
             return true;
         }
         return false;
     }
+    public boolean validateStudentForStudentLoan(Student student) throws
+            CollegeFinished, NotQulifiedForThisLoan, ErrorItsNotTimeOfSignUp {
+        if (checkStudentThatCanGetLoan(student)){
+            return true;
+        }
+        else return false;
+    }
+    //todo: must pay the bills here
+    @Override
+    public void PayTheBills(Student student) {
 
-    private boolean checkIfNotDuplicateLoan(Student student) {
+    }
+    //todo: pay bills finished
+    private boolean checkStudentThatCanGetLoan(Student student) throws CollegeFinished
+            , NotQulifiedForThisLoan, ErrorItsNotTimeOfSignUp {
+        if (checkDate(LocalDate.now()) && studentStillInCollege(student)
+                && checkIfNotDuplicateLoanForTuition(student)){
+            return false;
+        }
+        return true;
+    }
+    private boolean checkIfNotDuplicateLoanForTuition(Student student) throws NotQulifiedForThisLoan {
         List<Loan> loans = tuitionFeeLoan.findLoan(student);
-
+        //todo : it will find all loans that student got
+        for (Loan loan : loans) {
+            if (loan.getTypeOfLoan() == TypeOfLoan.HOUSING){
+                throw new NotQulifiedForThisLoan();
+            }else if (loan.getTypeOfLoan() == TypeOfLoan.STUDENTLOAN || loan.getTypeOfLoan() == TypeOfLoan.TUITION ){
+                if (LocalDate.now().getYear() == loan.getDateOfGet().getYear()){
+                    if (!(ifDateIsCorrectForSecondDate(loan.getDateOfGet()) && ifDateIsCorrectForFirstDate(LocalDate.now()))){
+                        throw new NotQulifiedForThisLoan();
+                    }
+                }
+                if (LocalDate.now().getYear()  == loan.getDateOfGet().getYear() + 1){
+                    if (ifDateIsCorrectForSecondDate(LocalDate.now()) && ifDateIsCorrectForFirstDate(loan.getDateOfGet())){
+                        throw new NotQulifiedForThisLoan();
+                    }
+                }
+            }
+        }
+        //todo: we must check if the spouse of the student get house loan or not if yes we block this student of getting house loan
+        return true;
     }
 
     private boolean studentStillInCollege(Student student) throws CollegeFinished{
             int year = LocalDate.now().getYear();
         int count = year - student.getDateOfEntrance();
-        if (count< getMaxYearForStudetToBeInCollege(student)){
+        if (count< getMaxYearForStudentToBeInCollege(student)){
             return true;
         }
         else {
             throw new CollegeFinished();
         }
     }
-    private Integer getMaxYearForStudetToBeInCollege(Student student ){
+    private Integer getMaxYearForStudentToBeInCollege(Student student ){
         if (student.getTypeOfMajor() == TypeOfMajor.KARSHENASIPEYVASTE){
             return 4;
         } else if (student.getTypeOfMajor() == TypeOfMajor.KARSHENASIARSHADNAPEYVASTE ||
