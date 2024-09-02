@@ -1,9 +1,6 @@
 package org.example.domain;
 
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Inheritance;
-import jakarta.persistence.InheritanceType;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -32,4 +29,7 @@ public class Person {
     private City city;
     private Boolean isMarried;
     private String spouseNationalCode;
+
+    @OneToOne
+    private House house;
 }

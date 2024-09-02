@@ -19,6 +19,7 @@ import org.example.service.student.StudentService;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Objects;
 import java.util.Random;
 import java.util.function.Function;
 
@@ -102,29 +103,39 @@ public class StudentServiceImp implements StudentService {
     }
 
     @Override
-    public void getHousingLoan(StudentHousingLoanDto studentHousingLoanDto, LoanDto loanDto) {
+    public void getHousingLoan(StudentHousingLoanDto studentHousingLoanDto, LoanDto loanDto)
+    {
 
     }
 
     @Override
     public boolean validateStudentForGettingHousingLoan(Student student) throws NotQulifiedForThisLoan {
-        if (student.getIsMarried() && !student.getIsIntHotel() ){
+        if (student.getIsMarried() && !student.getIsIntHotel() && checkSpouse(student)){
             return true;
         }
         throw new NotQulifiedForThisLoan();
     }
-    private Student
-    private boolean checkSpouse(Student student){
-        Student spouse = findByNationalCode(student.getSpouseNationalCode());
-        if (spouse.getStudentNumber() == null){
+    private Boolean checkSpouse(Student student)  {
+        Student spouse = checkIfSpouseExistForHousingLoan(student.getSpouseNationalCode());
+        if (Objects.isNull(spouse) || spouse.getStudentNumber() == null){
+            return true;
+        }else {
+            List<Loan> loans = tuitionFeeLoanService.findLoan(spouse);
+            for (Loan loan : loans){
+                if (loan.getTypeOfLoan() == TypeOfLoan.HOUSING){
+                    return false;
+                }
+            }
             return true;
         }
-        if ()
-
-
-        return false;
     }
-
+    private Student checkIfSpouseExistForHousingLoan(String nationalCode){
+        Student spouse = findByNationalCode(nationalCode);
+        if (spouse.getStudentNumber() == null){
+            return null;
+        }
+        return spouse;
+    }
     @Override
     public Student findByNationalCode(String nationalCode) {
         //todo: must fix this class
