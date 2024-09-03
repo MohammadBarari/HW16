@@ -17,6 +17,8 @@ import java.time.LocalDate;
 @Setter
 @SuperBuilder
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
+@Entity
+@Table
 public class Person implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

@@ -14,6 +14,14 @@ public class BillRepositoryImp implements BillRepository {
 
     @Override
     public Bill update(Bill bill) {
-        EntityManager entityManager = 
+            EntityManager entityManager = HibernateUtil.getInstance().getEntityManager();
+        try {
+            entityManager.getTransaction().begin();
+            entityManager.merge(bill);
+            entityManager.getTransaction().commit();
+        }catch (Exception e) {
+            entityManager.getTransaction().rollback();
+        }
+        return bill;
     }
 }

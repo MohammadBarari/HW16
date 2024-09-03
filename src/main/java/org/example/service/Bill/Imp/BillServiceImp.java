@@ -39,7 +39,7 @@ public class BillServiceImp implements BillService {
     }
 
     @Override
-    public Set<Bill> billCalculator(Long price, LocalDate timeOfGet) {
+    public Set<Bill> billsCalculator(Long price, LocalDate dateOfGet) {
         Long eachYear = price/5;
         Set<Bill> bills = new HashSet<>();
         List<Long> eachyears = new ArrayList<>();
@@ -48,7 +48,7 @@ public class BillServiceImp implements BillService {
         }
         eachyears.add(eachYear + (price - eachYear * 5));
         //todo : it can goes into a method with long input and list<Long> output
-        LocalDate localDateBill =timeOfGet;
+        LocalDate localDateBill =dateOfGet;
         for (int i = 1; i <= 5; i++) {
             //todo: profit still has not been calculated
             Long eachMonth = eachyears.get(i)/12 * 2;

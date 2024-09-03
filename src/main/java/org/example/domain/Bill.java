@@ -1,9 +1,6 @@
 package org.example.domain;
 
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
 import lombok.*;
 
 import java.io.Serializable;
@@ -16,6 +13,8 @@ import java.time.LocalDateTime;
 @Setter
 @Builder
 @ToString
+@Entity
+@Table
 public class Bill implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

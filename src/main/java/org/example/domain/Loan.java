@@ -2,22 +2,22 @@ package org.example.domain;
 
 import jakarta.persistence.*;
 import lombok.*;
-import lombok.experimental.SuperBuilder;
 import org.example.enumiration.TypeOfLoan;
 
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Set;
 
-@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
 @Builder
+@Entity
+@Table
 public class Loan implements Serializable {
+    @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
 
@@ -35,6 +35,7 @@ public class Loan implements Serializable {
     private LocalDate cartExpiryDate;
 
     @OneToMany
+    @JoinColumn(name = "bill_id")
     private Set<Bill> bill;
 
     private TypeOfLoan typeOfLoan;

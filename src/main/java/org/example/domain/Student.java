@@ -1,13 +1,15 @@
 package org.example.domain;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.Table;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.example.enumiration.TypeOfCollege;
 import org.example.enumiration.TypeOfMajor;
 
 import java.io.Serializable;
-import java.util.Set;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -16,6 +18,7 @@ import java.util.Set;
 @Setter
 @ToString
 @Entity
+@Table
 public class Student extends Person implements Serializable {
 
     private String studentNumber;

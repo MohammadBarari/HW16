@@ -39,6 +39,5 @@ public class StudentLoanServiceImp extends BaseLoanImp implements StudentLoanSer
             return 2_600_000L;
         }
         return 0L;
-
     }
 }
