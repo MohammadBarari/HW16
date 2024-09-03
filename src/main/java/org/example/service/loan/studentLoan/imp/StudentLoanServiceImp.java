@@ -4,7 +4,7 @@ import org.example.domain.Loan;
 import org.example.domain.Student;
 import org.example.dto.LoanDto;
 import org.example.enumiration.TypeOfLoan;
-import org.example.service.loan.BaseLoanImp;
+import org.example.service.loan.base.BaseLoanImp;
 import org.example.service.loan.studentLoan.StudentLoanService;
 
 import java.time.LocalDate;

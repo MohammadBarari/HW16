@@ -2,15 +2,18 @@ package org.example.service.student.studentServiceImp;
 
 import org.example.Base.DateOfOpenAndCloseforLoanSignUp;
 import org.example.domain.Loan;
+import org.example.domain.Person;
 import org.example.domain.Student;
-import org.example.dto.LoanDto;
-import org.example.dto.StudentLoginDto;
-import org.example.dto.StudentSignUpDto;
+import org.example.dto.*;
 import org.example.enumiration.TypeOfCollege;
 import org.example.enumiration.TypeOfLoan;
 import org.example.enumiration.TypeOfMajor;
 import org.example.exeptions.*;
 import org.example.repository.student.StudentRepository;
+import org.example.service.house.HouseService;
+import org.example.service.house.imp.HouseServiceImp;
+import org.example.service.loan.housingLoan.HousingLoanService;
+import org.example.service.loan.housingLoan.imp.HousingLoanServiceImp;
 import org.example.service.loan.studentLoan.StudentLoanService;
 import org.example.service.loan.studentLoan.imp.StudentLoanServiceImp;
 import org.example.service.loan.tuitionFeeLoan.TuitionFeeLoanService;
@@ -27,7 +30,8 @@ public class StudentServiceImp implements StudentService {
     StudentRepository studentRepository;
     private TuitionFeeLoanService tuitionFeeLoanService = new TuitionFeeLoanServiceImp();
     private StudentLoanService studentLoanService =  new StudentLoanServiceImp();
-
+    private HousingLoanService housingLoanService =  new HousingLoanServiceImp();
+    private HouseService houseService =  new HouseServiceImp();
     @Override
     public void register(StudentSignUpDto student) throws DuplicateStudentException {
         if (studentDoesntExist(student)){
@@ -103,9 +107,45 @@ public class StudentServiceImp implements StudentService {
     }
 
     @Override
-    public void getHousingLoan(StudentHousingLoanDto studentHousingLoanDto, LoanDto loanDto)
-    {
+    public void setHousingLoan(Student student, LoanDto loanDto
+            , SpouseDtoPerson spouseDtoPerson,
+    HouseDto houseDto) throws NotQulifiedForThisLoan {
+        student.setSpouseNationalCode(spouseDtoPerson.spouseNationalCode());
+        if (validateStudentForGettingHousingLoan(student)){
+            Student student1 = findByNationalCode(spouseDtoPerson.nationalCode());
+            if (student1 == null){
+                SaveSpouce(spouseDtoPerson , student.getNationalCode());
+            }
+            houseService.save(houseDto);
+            housingLoanService.getHousingLoan(student,loanDto);
+        }else {
+            throw new NotQulifiedForThisLoan();
+        }
+    }
+    public void setTheHotelAndOtherForStudentHousingLoan(Student student, StudentHousingLoanDto studentHousingLoanDto){
+        student.setIsMarried(studentHousingLoanDto.isMarried());
+        student.setIsIntHotel(studentHousingLoanDto.isIntHotel());
+    }
+    private void SaveSpouce(SpouseDtoPerson spouseDtoPerson,String spouseNationalCode) {
+        Person person = new Person();
+        person.setName(spouseDtoPerson.name());
+        person.setFamily(spouseDtoPerson.family());
+        person.setMotherName(spouseDtoPerson.motherName());
+        person.setFatherName(spouseDtoPerson.fatherName());
+        person.setSerialNumber(spouseDtoPerson.serialNumber());
+        person.setNationalCode(spouseDtoPerson.nationalCode());
+        person.setBirthDay(spouseDtoPerson.birthDay());
+        person.setSpouseNationalCode(spouseNationalCode);
+    }
 
+    public Student saveTheStudent(Student student){
+        studentRepository.save(student);
+        return student;
+    }
+    public Person savePerosn(Person person){
+        //todo: must save person here ;
+        studentRepository.savePerson(person);
+        return person;
     }
 
     @Override
@@ -226,6 +266,7 @@ public class StudentServiceImp implements StudentService {
             throw new CollegeFinished();
         }
     }
+
     private Integer getMaxYearForStudentToBeInCollege(Student student ){
         if (student.getTypeOfMajor() == TypeOfMajor.KARSHENASIPEYVASTE){
             return 4;
@@ -239,6 +280,7 @@ public class StudentServiceImp implements StudentService {
         }
 
     }
+
     private boolean checkDate(LocalDate localDate) throws ErrorItsNotTimeOfSignUp {
         if (ifDateIsCorrectForFirstDate(localDate) || ifDateIsCorrectForSecondDate(localDate)){
             return true;

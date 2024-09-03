@@ -6,6 +6,7 @@ import lombok.experimental.SuperBuilder;
 import org.example.enumiration.TypeOfLoan;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
 
@@ -19,7 +20,7 @@ public class Loan {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
 
-    private LocalDate dateOfGet; //todo : must be within the dates that was wanted
+    private LocalDateTime dateOfGet; //todo : must be within the dates that was wanted
 
     private Integer countsInYear; //todo : must be 1 at a year at max
 

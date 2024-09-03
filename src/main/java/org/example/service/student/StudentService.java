@@ -1,9 +1,7 @@
 package org.example.service.student;
 
 import org.example.domain.Student;
-import org.example.dto.LoanDto;
-import org.example.dto.StudentLoginDto;
-import org.example.dto.StudentSignUpDto;
+import org.example.dto.*;
 import org.example.exeptions.CollegeFinished;
 import org.example.exeptions.ErrorItsNotTimeOfSignUp;
 import org.example.exeptions.NotQulifiedForThisLoan;
@@ -18,7 +16,8 @@ public interface StudentService {
     void getLoan(Student student , LoanDto loanDto) throws NotQulifiedForThisLoan,
             NotQulifiedForThisLoan, ErrorItsNotTimeOfSignUp, CollegeFinished;
 
-    void getHousingLoan(StudentHousingLoanDto studentHousingLoanDto , LoanDto loanDto);
+    void setHousingLoan(Student student , LoanDto loanDto, SpouseDtoPerson spouseDtoPerson,
+    HouseDto houseDto) throws NotQulifiedForThisLoan;
 
     boolean validateStudentForGettingHousingLoan(Student student) throws NotQulifiedForThisLoan;
 
