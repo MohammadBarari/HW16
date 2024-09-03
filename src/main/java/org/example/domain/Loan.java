@@ -5,6 +5,7 @@ import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.example.enumiration.TypeOfLoan;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -16,7 +17,7 @@ import java.util.Set;
 @Getter
 @Setter
 @Builder
-public class Loan {
+public class Loan implements Serializable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
 

@@ -1,6 +1,8 @@
 package org.example.service.Bill.Imp;
 
 import org.example.domain.Bill;
+import org.example.repository.bill.BillRepository;
+import org.example.repository.bill.imp.BillRepositoryImp;
 import org.example.service.Bill.BillService;
 
 import java.time.LocalDate;
