@@ -54,18 +54,17 @@ public class Functions {
     public Function<String  ,  TypeOfMajor> typeOfMajorFunction = s -> {
         while (true){
             try {
-                TypeOfMajor typeOfMajor = TypeOfMajor.valueOf(s);
-                return typeOfMajor;
+                return TypeOfMajor.valueOf(s);
             }catch (Exception e){
                 System.out.println("please enter the type of major corectly!!! ");
+                s = notAcceptNull.apply(s);
             }
         }
     };
     public Function<String , TypeOfCollege > typeOfCollegeFunction = s -> {
         while (true){
             try {
-                TypeOfCollege typeOfCollege = TypeOfCollege.valueOf(s);
-                return typeOfCollege;
+                return TypeOfCollege.valueOf(s);
             }catch (Exception e){
                 System.out.println("please enter the type of college corectly!!! ");
             }
@@ -87,14 +86,14 @@ public class Functions {
                 return integer;
             }else {
                 System.out.println("please enter the number correctly !!! ");
+                integer = stringIntegerFunction.apply(notAcceptNull.apply(scanner.nextLine()));
             }
         }
     };
     public Function<String  , TypeOfLoan> typeOfLoanCheck = s -> {
         while (true){
             try {
-                TypeOfLoan typeOfLoan = TypeOfLoan.valueOf(s);
-                return typeOfLoan;
+                return TypeOfLoan.valueOf(s);
             }catch (Exception e){
                 System.out.println("please enter the type of major corectly!!! ");
             }
@@ -117,8 +116,9 @@ public class Functions {
         boolean valid = false;
         while (!valid){
             valid = checkCvv2Length.apply(string);
-            if (valid = false){
+            if (!valid){
                 System.out.println("please enter the cvv2 correctly!!! ");
+                string = notAcceptNull.apply(scanner.nextLine());
             }
         }
         return string;
@@ -129,6 +129,7 @@ public class Functions {
                 return number;
             }else {
                 System.out.println("please enter the number correctly!!! ");
+                number = stringIntegerFunction.apply(notAcceptNull.apply(scanner.nextLine()));
             }
         }
     } ;

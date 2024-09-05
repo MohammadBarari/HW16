@@ -45,14 +45,10 @@ public class BillServiceImp implements BillService {
 
     @Override
     public Set<Bill > billsCalculator(Long price, LocalDate timeOfGet) {
-        Long total = 0L;
+        long total = 0L;
         Long eachYear = price/5;
         Set<Bill> bills = new HashSet<>();
-        List<Long> eachyears = new ArrayList<>();
-        for (int i = 0; i < 4; i++) {
-            eachyears.add(eachYear);
-        }
-        eachyears.add(eachYear + (price - eachYear * 5));
+        List<Long> eachyears = calculateProfit(price);
         //todo : it can goes into a method with long input and list<Long> output
         LocalDate localDateBill =timeOfGet;
         for (int i = 0; i < 5; i++) {
@@ -89,5 +85,18 @@ public class BillServiceImp implements BillService {
         }
         System.out.println(total + " is felan :::");
         return bills;
+    }
+    private List<Long> calculateProfit(Long input){
+        long withProfit = (long) (input + (input * 0.04));
+        long x = withProfit/31;
+        long total = 0L;
+        List<Long> eachyears = new ArrayList<>();
+        for (int i = 1; i <= 4; i++) {
+            total += (x * (long) Math.pow(2,i));
+            eachyears.add(x * (long) Math.pow(2,i));
+        }
+        Long lastYear = withProfit - total;
+        eachyears.add(lastYear);
+        return eachyears;
     }
 }

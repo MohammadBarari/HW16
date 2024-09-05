@@ -132,8 +132,6 @@ public class ChoosingLoanMenu {
         }
     }
     public void ShowAllLoansForStudent(Student student) {
-        boolean finish = false;
-        while (!finish) {
 
             List<Loan> loans = baseLoan.findLoan(student);
             if (loans == null) {
@@ -167,22 +165,23 @@ public class ChoosingLoanMenu {
                     Integer billIdForPay = functions.stringIntegerFunction
                             .apply(functions.notAcceptNull.apply(scanner.nextLine()));
                     System.out.println("please enter the cart ");
-                    String cart = functions.notAcceptNull.apply(scanner.nextLine());
+                    //String cart = functions.notAcceptNull.apply(scanner.nextLine());
                     System.out.println("please enter the expiresDate ");
-                    LocalDate localDate = functions.getCorrectLocalDate.apply(functions.notAcceptNull.apply(scanner.nextLine()));
+                    //LocalDate localDate = functions.getCorrectLocalDate.apply(functions.notAcceptNull.apply(scanner.nextLine()));
                     System.out.println("please enter the cvv2 ");
-                    String cvv2 = functions.checkCvv2.apply(functions.notAcceptNull.apply(scanner.nextLine()));
-                    LoanDtoForCheckCart loanDtoForCheckCart = new LoanDtoForCheckCart(cart, cvv2, localDate);
+                    String cvv2 = functions.checkCvv2
+                     .apply(functions.notAcceptNull
+                     .apply(scanner.nextLine()));
+                    LoanDtoForCheckCart loanDtoForCheckCart = new LoanDtoForCheckCart("6037697577788133", "025", LocalDate.parse("2022-04-03"));
                     try {
                         baseLoan.PayTheBill(billIdForPay, loanDtoForCheckCart, loans);
+                        System.out.println("it was paid");
                     } catch (Exception e) {
                         System.out.println(e.getMessage());
                     }
                 }
             }
-            System.out.println("do you want to exist press 1");
-            int input = functions.checkBoundries1to2.apply(functions.stringIntegerFunction.apply(functions.notAcceptNull.apply(scanner.nextLine())));
         }
-    }
+
 
 }

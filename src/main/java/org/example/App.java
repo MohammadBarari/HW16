@@ -10,6 +10,8 @@ import org.example.enumiration.TypeOfCollege;
 import org.example.enumiration.TypeOfLoan;
 import org.example.enumiration.TypeOfMajor;
 import org.example.menu.MainMenu;
+import org.example.service.Bill.BillService;
+import org.example.service.Bill.Imp.BillServiceImp;
 import org.example.service.loan.base.BaseLoan;
 import org.example.service.loan.base.BaseLoanImp;
 import org.example.service.student.StudentService;
@@ -58,5 +60,21 @@ public class App
 //        }
         MainMenu mainMenu = new MainMenu();
         mainMenu.start();
+//    BillService billService = new BillServiceImp();
+//    try {
+//    billService.payBill(1);
+//    BaseLoan baseLoan = new BaseLoanImp();
+//        String cartNumber ="6037697577788133" ;
+//                LocalDate expiredDate =LocalDate.parse("2022-04-03");
+//                String cvv2 ="025";
+//                LoanDtoForCheckCart loanDtoForCheckCart = new LoanDtoForCheckCart(cartNumber,cvv2,expiredDate);
+//            Student student = new Student();
+//            student.setId(1);
+//                List<Loan> loans = baseLoan.findLoan(student);
+//    baseLoan.PayTheBill(2,loanDtoForCheckCart,loans);
+//
+//    }catch (Exception e) {
+//        e.printStackTrace();
+//    }
     }
 }

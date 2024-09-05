@@ -33,7 +33,7 @@ public class BaseLoanImp implements BaseLoan{
 
             for (Loan lo : loans) {
                 if (!(Objects.equals(lo.getCartNumber(), loanDtoForCheckCart.cartNumber())
-                        && lo.getCartExpiryDate() == loanDtoForCheckCart.expiresDate()
+                        && Objects.equals(lo.getCartExpiryDate(), loanDtoForCheckCart.expiresDate())
                 && lo.getCv22().equals(loanDtoForCheckCart.cvv2()))){
                     return false;
                 }
