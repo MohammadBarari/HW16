@@ -34,10 +34,11 @@ public class Loan implements Serializable {
 
     private LocalDate cartExpiryDate;
 
-    @OneToMany
-    @JoinColumn(name = "bill_id")
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "loan_id")
     private Set<Bill> bill;
 
+    @Enumerated(EnumType.STRING)
     private TypeOfLoan typeOfLoan;
 
 }

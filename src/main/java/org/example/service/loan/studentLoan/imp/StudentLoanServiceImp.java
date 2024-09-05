@@ -8,6 +8,7 @@ import org.example.service.loan.base.BaseLoanImp;
 import org.example.service.loan.studentLoan.StudentLoanService;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 public class StudentLoanServiceImp extends BaseLoanImp implements StudentLoanService {
     @Override
@@ -25,6 +26,7 @@ public class StudentLoanServiceImp extends BaseLoanImp implements StudentLoanSer
         loan.setCartNumber(loanDto.cartNumber());
         loan.setCv22(loan.getCv22());
         loan.setCartExpiryDate(loanDto.expiresDate());
+        loan.setDateOfGet(LocalDateTime.now());
         saveLoan(loan);
         //todo : tutionLoanRepository.save(Loan loan);
     }

@@ -33,6 +33,6 @@ public interface StudentService {
 
     //todo: check whether if student is in three group that the question needed
 
-
+    public void setTheHotelAndOtherForStudentHousingLoan(Student student, StudentHousingLoanDto studentHousingLoanDto);
     Student findByNationalCode(String nationalCode);
 }

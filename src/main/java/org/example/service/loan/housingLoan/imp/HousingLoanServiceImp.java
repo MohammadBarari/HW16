@@ -15,13 +15,8 @@ public class HousingLoanServiceImp extends BaseLoanImp implements HousingLoanSer
 
     @Override
     public void getHousingLoan(Student student, LoanDto loanDto) {
-        Loan loan = new Loan();
-        loan.setTypeOfLoan(TypeOfLoan.HOUSING);
+        Loan loan = loanMapper(loanDto);
         loan.setStudent(student);
-        loan.setCv22(loanDto.cvv2());
-        loan.setCartExpiryDate(loanDto.expiresDate());
-        loan.setCartNumber(loanDto.cartNumber());
-        loan.setDateOfGet(LocalDateTime.now());
         loan.setBill(billService.billsCalculator(calculateMoneyForStudentHousingLoan(student), LocalDate.now()));
         saveLoan(loan);
         sendMoneyToStudent(student,calculateMoneyForStudentHousingLoan(student));

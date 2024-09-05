@@ -20,8 +20,8 @@ public class BaseLoanRepositoryImp implements BaseLoanRepository {
         EntityManager entityManager = HibernateUtil.getInstance().getEntityManager();
 
         Query query = entityManager.createNativeQuery(
-                "select * from loan join students on s.id = loan.student_id where student_id = ?"
-        );
+                "select l.* from loan l join student s on s.id = l.student_id where l.student_id = ?"
+        ,Loan.class);
         query.setParameter(1, student.getId());
         List<Loan> loans = query.getResultList();
         return loans;
@@ -29,24 +29,30 @@ public class BaseLoanRepositoryImp implements BaseLoanRepository {
 
     @Override
     public List<Bill> allNonPaidBillForALoan(Integer loanId) {
-        EntityManager entityManager = HibernateUtil.getInstance().getEntityManager();
-        Query query = entityManager.createNativeQuery("" +
-                "select * from loan join bill b on loan.id = b.bill_id\n" +
-                "where loan.id = ? AND b.ispaid = false;");
-        query.setParameter(1, loanId);
-        List<Bill> bills = query.getResultList();
-        return bills;
+        try {
+            EntityManager entityManager = HibernateUtil.getInstance().getEntityManager();
+            Query query = entityManager.createNativeQuery("" +
+                    "select * from bill b where b.loan_id = ? and b.ispaid = false", Bill.class);
+            query.setParameter(1, loanId);
+            List<Bill> bills = query.getResultList();
+            return bills;
+        }catch (Exception e) {
+            return null;
+        }
     }
 
     @Override
     public List<Bill> allPaidBillForALoan(Integer loanId) {
-        EntityManager entityManager = HibernateUtil.getInstance().getEntityManager();
-        Query query = entityManager.createNativeQuery("" +
-                "select * from loan join bill b on loan.id = b.bill_id\n" +
-                "where loan.id = ? AND b.ispaid = true;");
-        query.setParameter(1, loanId);
-        List<Bill> bills = query.getResultList();
-        return bills;
+        try {
+            EntityManager entityManager = HibernateUtil.getInstance().getEntityManager();
+            Query query = entityManager.createNativeQuery("" +
+                    "select * from bill b where b.loan_id = ? and b.ispaid = true", Bill.class);
+            query.setParameter(1, loanId);
+            List<Bill> bills = query.getResultList();
+            return bills;
+        }catch (Exception e) {
+            return null;
+        }
     }
 
     @Override

@@ -22,27 +22,37 @@ public class StudentRepositoryImp implements StudentRepository {
 
     @Override
     public Student findByStudentNumber(String studentNumber) {
+        try {
+
+
         EntityManager entityManager = HibernateUtil.getInstance().getEntityManager();
         Query query = entityManager.createNativeQuery("""
-        select * from hw16_schema.student where studentnumber = ?
-""");
+        select * from student where studentnumber = ?
+""",Student.class);
         query.setParameter(1, studentNumber);
         Student student = (Student) query.getSingleResult();
-        return student;
+        return student;}catch (Exception e){
+            return null;
+        }
     }
 
     @Override
     public Student findByUserAndPass(String user, String pass) {
-        EntityManager entityManager = HibernateUtil.getInstance().getEntityManager();
-        Query query = entityManager.createNativeQuery("""
-        select * from hw16_schema.student where username = ? and
+        try {
+            EntityManager entityManager = HibernateUtil.getInstance().getEntityManager();
+
+            Query query = entityManager.createNativeQuery("""
+        select * from student where username = ? and
                                                 password = ?;
-""");
-        query.setParameter(1, user);
-        query.setParameter(2, pass);
-        Student student = (Student) query.getSingleResult();
-        return student;
-        //Query("from Student where user = :user and password = :pass");
+""", Student.class);
+            query.setParameter(1, user);
+            query.setParameter(2, pass);
+            Student student = (Student) query.getSingleResult();
+            return student;
+        }catch (Exception e){
+            //Query("from Student where user = :user and password = :pass");
+            return null;
+        }
     }
 
     @Override
@@ -59,14 +69,18 @@ public class StudentRepositoryImp implements StudentRepository {
 
     @Override
     public Student findStudentByNationalCode(String nationalCode) {
+        try {
+
+
         EntityManager entityManager = HibernateUtil.getInstance().getEntityManager();
         Query query = entityManager.createNativeQuery("""
-        select s from hw16_schema.student s, hw16_schema.person p where s.id = p.id\s
-        and p.nationalcode = ?
+        select s from student s where s.nationalcode = ?
 """);
         query.setParameter(1, nationalCode);
         Student student = (Student) query.getSingleResult();
-        return student;
+        return student;}catch (Exception e){
+            return null;
+        }
     }
 
     @Override

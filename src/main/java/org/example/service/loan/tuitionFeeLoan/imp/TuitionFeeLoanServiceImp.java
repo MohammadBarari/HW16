@@ -4,7 +4,6 @@ import org.example.domain.Loan;
 import org.example.domain.Student;
 import org.example.dto.LoanDto;
 import org.example.enumiration.TypeOfLoan;
-import org.example.repository.loan.TuitionFeeLoan.TuitionFeeLoanRepository;
 import org.example.service.loan.base.BaseLoanImp;
 import org.example.service.loan.tuitionFeeLoan.TuitionFeeLoanService;
 
@@ -12,7 +11,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 public class TuitionFeeLoanServiceImp extends BaseLoanImp implements TuitionFeeLoanService {
-    TuitionFeeLoanRepository tuitionFeeLoanRepository;
 
     @Override
     public void getTuitionFeeLoan(Student student , LoanDto loanDto) {

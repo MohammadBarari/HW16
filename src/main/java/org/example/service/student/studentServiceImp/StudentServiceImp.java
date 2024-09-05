@@ -34,8 +34,10 @@ public class StudentServiceImp implements StudentService {
     private StudentLoanService studentLoanService =  new StudentLoanServiceImp();
     private HousingLoanService housingLoanService =  new HousingLoanServiceImp();
     private HouseService houseService =  new HouseServiceImp();
+
     @Override
     public Student register(StudentSignUpDto student) throws DuplicateStudentException {
+        if (studentDoesntExist(student)){
             Student student1 = Student.builder().name(student.name())
                     .family(student.family())
                     .motherName(student.motherName())
@@ -52,7 +54,8 @@ public class StudentServiceImp implements StudentService {
             .build();
             settingUserAndPassForStudent(student1);
             saveTheStudent(student1);
-            return student1;
+            return student1;}
+        return null;
     }
 
     @Override
@@ -115,7 +118,7 @@ public class StudentServiceImp implements StudentService {
         student.setSpouseNationalCode(spouseDtoPerson.spouseNationalCode());
         if (validateStudentForGettingHousingLoan(student)){
             Student student1 = findByNationalCode(spouseDtoPerson.nationalCode());
-            if (student1.getStudentNumber() == null){
+            if ( student1 == null ||student1.getStudentNumber() == null){
                 SaveSpouse(spouseDtoPerson , student.getNationalCode());
             }
             houseService.save(houseDto);
@@ -175,7 +178,7 @@ public class StudentServiceImp implements StudentService {
     }
     private Student checkIfSpouseExistForHousingLoan(String nationalCode){
         Student spouse = findByNationalCode(nationalCode);
-        if (spouse.getStudentNumber() == null){
+        if ( spouse == null ||spouse.getStudentNumber() == null){
             return null;
         }
         return spouse;
@@ -212,9 +215,9 @@ public class StudentServiceImp implements StudentService {
             , NotQulifiedForThisLoan, ErrorItsNotTimeOfSignUp {
         if (checkDate(LocalDate.now()) && studentStillInCollege(student)
                 && checkIfNotDuplicateLoanForTuition(student)){
-            return false;
+            return true;
         }
-        return true;
+        return false;
     }
     private boolean checkIfNotDuplicateLoanForTuition(Student student) throws NotQulifiedForThisLoan {
         List<Loan> loans = tuitionFeeLoanService.findLoan(student);
@@ -328,11 +331,11 @@ public class StudentServiceImp implements StudentService {
         return null;
     };
 
-//    private boolean studentDoesntExist(StudentSignUpDto student) throws DuplicateStudentException {
-//        if(studentRepository.findByStudentNumber(student.studentNumber()) != null){
-//            return true;
-//        }
-//        throw new DuplicateStudentException();
-//    }
+    private boolean studentDoesntExist(StudentSignUpDto student) throws DuplicateStudentException {
+        if(studentRepository.findByStudentNumber(student.studentNumber()) == null){
+            return true;
+        }
+        throw new DuplicateStudentException();
+    }
 
 }

@@ -1,6 +1,7 @@
 package org.example.service.Bill.Imp;
 
 import org.example.domain.Bill;
+import org.example.exeptions.PayTheBillError;
 import org.example.repository.bill.BillRepository;
 import org.example.repository.bill.imp.BillRepositoryImp;
 import org.example.service.Bill.BillService;
@@ -20,11 +21,15 @@ public class BillServiceImp implements BillService {
         billRepository = new BillRepositoryImp();
     }
 
-    public void payBill(Integer id) {
-        Bill bill = findById(id);
-        bill.setIsPaid(true);
-        bill.setTimeOfPayment(LocalDateTime.now());
-        updateBill(bill);
+    public void payBill(Integer id) throws PayTheBillError {
+        try {
+            Bill bill = findById(id);
+            bill.setIsPaid(true);
+            bill.setTimeOfPayment(LocalDateTime.now());
+            updateBill(bill);
+        }catch (Exception e){
+            throw new PayTheBillError();
+        }
     }
 
     @Override
@@ -39,7 +44,8 @@ public class BillServiceImp implements BillService {
     }
 
     @Override
-    public Set<Bill> billsCalculator(Long price, LocalDate dateOfGet) {
+    public Set<Bill > billsCalculator(Long price, LocalDate timeOfGet) {
+        Long total = 0L;
         Long eachYear = price/5;
         Set<Bill> bills = new HashSet<>();
         List<Long> eachyears = new ArrayList<>();
@@ -48,14 +54,14 @@ public class BillServiceImp implements BillService {
         }
         eachyears.add(eachYear + (price - eachYear * 5));
         //todo : it can goes into a method with long input and list<Long> output
-        LocalDate localDateBill =dateOfGet;
-        for (int i = 1; i <= 5; i++) {
-            //todo: profit still has not been calculated
-            Long eachMonth = eachyears.get(i)/12 * 2;
+        LocalDate localDateBill =timeOfGet;
+        for (int i = 0; i < 5; i++) {
+            Long eachMounth = eachyears.get(i)/12;
             for (int j = 0; j < 7; j++) {
                 //it should be in method
                 Bill bill = new Bill();
-                bill.setAmount(eachMonth);
+                total += eachMounth;
+                bill.setAmount(eachMounth);
                 localDateBill = localDateBill.plusDays(30);
                 bill.setExpiresDate(localDateBill);
                 bill.setIsPaid(false);
@@ -64,7 +70,8 @@ public class BillServiceImp implements BillService {
             }
             for (int j = 0; j < 4; j++) {
                 Bill bill = new Bill();
-                bill.setAmount(eachMonth);
+                total += eachMounth;
+                bill.setAmount(eachMounth);
                 localDateBill = localDateBill.plusDays(31);
                 bill.setExpiresDate(localDateBill);
                 bill.setIsPaid(false);
@@ -72,12 +79,15 @@ public class BillServiceImp implements BillService {
             }
             {
                 Bill bill = new Bill();
-                bill.setAmount(eachMonth +(eachyears.get(i) - eachMonth*12));
+                total += eachMounth +(eachyears.get(i) - eachMounth*12);
+                bill.setAmount(eachMounth +(eachyears.get(i) - eachMounth*12));
                 localDateBill = localDateBill.plusDays(31);
                 bill.setExpiresDate(localDateBill);
+                bill.setIsPaid(false);
                 bills.add(bill);
             }
         }
+        System.out.println(total + " is felan :::");
         return bills;
     }
 }
