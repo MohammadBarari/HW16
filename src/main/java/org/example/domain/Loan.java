@@ -23,9 +23,7 @@ public class Loan implements Serializable {
 
     private LocalDateTime dateOfGet; //todo : must be within the dates that was wanted
 
-    private Integer countsInYear; //todo : must be 1 at a year at max
-
-    @ManyToOne
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE })
     private Student student;
 
     private String cv22; //todo : has a fourNumber limit

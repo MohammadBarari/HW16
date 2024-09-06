@@ -123,7 +123,7 @@ public class StudentServiceImp implements StudentService {
             if ( student1 == null ||student1.getStudentNumber() == null){
                 SaveSpouse(spouseDtoPerson , student.getNationalCode());
             }
-            houseService.save(houseDto);
+
             housingLoanService.getHousingLoan(student,loanDto);
         }else {
             throw new NotQulifiedForThisLoan();
@@ -161,7 +161,7 @@ public class StudentServiceImp implements StudentService {
     public boolean validateStudentForGettingHousingLoan(Student student) throws NotQulifiedForThisLoan, ErrorItsNotTimeOfSignUp, CollegeFinished {
         if (checkDate(LocalDate.now()) &&
                 studentStillInCollege(student) && checkIfNotDuplicateLoanForTuition(student,TypeOfLoan.HOUSING)
-                &&student.getIsMarried() && student.getIsIntHotel() && checkSpouse(student)){
+                &&student.getIsMarried() && !student.getIsIntHotel() && checkSpouse(student)){
             return true;
         }
         throw new NotQulifiedForThisLoan();
