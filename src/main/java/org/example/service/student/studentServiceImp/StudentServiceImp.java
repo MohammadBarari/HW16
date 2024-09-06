@@ -51,6 +51,8 @@ public class StudentServiceImp implements StudentService {
             .typeOfMajor(student.typeOfMajor())
                     .typeOfCollege(student.typeOfCollege())
                     .city(student.city())
+                    .isMarried(student.isMarried())
+                    .isIntHotel(student.isInHotel())
             .build();
             settingUserAndPassForStudent(student1);
             saveTheStudent(student1);
@@ -156,8 +158,10 @@ public class StudentServiceImp implements StudentService {
     }
 
     @Override
-    public boolean validateStudentForGettingHousingLoan(Student student) throws NotQulifiedForThisLoan {
-        if (student.getIsMarried() && !student.getIsIntHotel() && checkSpouse(student)){
+    public boolean validateStudentForGettingHousingLoan(Student student) throws NotQulifiedForThisLoan, ErrorItsNotTimeOfSignUp, CollegeFinished {
+        if (checkDate(LocalDate.now()) &&
+                studentStillInCollege(student) &&
+                student.getIsMarried() && student.getIsIntHotel() && checkSpouse(student)){
             return true;
         }
         throw new NotQulifiedForThisLoan();

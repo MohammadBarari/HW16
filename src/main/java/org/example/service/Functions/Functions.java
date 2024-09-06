@@ -1,4 +1,4 @@
-package org.example.Functions;
+package org.example.service.Functions;
 
 import org.example.enumiration.City;
 import org.example.enumiration.TypeOfCollege;
@@ -33,6 +33,7 @@ public class Functions {
             return localDate;
         }catch (Exception e){
             System.out.println("please enter the date correctly !!! ");
+            string = notAcceptNull.apply(scanner.nextLine());
         }
         return null;
     };
@@ -57,7 +58,7 @@ public class Functions {
                 return TypeOfMajor.valueOf(s);
             }catch (Exception e){
                 System.out.println("please enter the type of major corectly!!! ");
-                s = notAcceptNull.apply(s);
+                s = notAcceptNull.apply(scanner.nextLine());
             }
         }
     };
@@ -67,6 +68,7 @@ public class Functions {
                 return TypeOfCollege.valueOf(s);
             }catch (Exception e){
                 System.out.println("please enter the type of college corectly!!! ");
+                s = notAcceptNull.apply(scanner.nextLine());
             }
         }
     };
@@ -77,6 +79,7 @@ public class Functions {
                 return city;
             }catch (Exception e){
                 System.out.println("please enter the city corectly!!! ");
+                s = notAcceptNull.apply(scanner.nextLine());
             }
         }
     };
@@ -96,6 +99,7 @@ public class Functions {
                 return TypeOfLoan.valueOf(s);
             }catch (Exception e){
                 System.out.println("please enter the type of major corectly!!! ");
+                s = notAcceptNull.apply(scanner.nextLine());
             }
         }
     };

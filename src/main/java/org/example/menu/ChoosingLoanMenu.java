@@ -1,14 +1,11 @@
 package org.example.menu;
 
 
-import org.example.Functions.Functions;
+import org.example.dto.*;
+import org.example.service.Functions.Functions;
 import org.example.domain.Bill;
 import org.example.domain.Loan;
 import org.example.domain.Student;
-import org.example.dto.HouseDto;
-import org.example.dto.LoanDto;
-import org.example.dto.LoanDtoForCheckCart;
-import org.example.dto.SpouseDtoPerson;
 import org.example.enumiration.City;
 import org.example.enumiration.TypeOfLoan;
 import org.example.service.loan.base.BaseLoan;
@@ -43,8 +40,10 @@ public class ChoosingLoanMenu {
             }
         }
         if (student == null){
-
+            System.out.println("student is null");
+            return;
         }
+        System.out.println(student);
         System.out.println("please ensert");
         System.out.println("Repaiment 1 ");
         System.out.println("Getting loan 2");
@@ -155,7 +154,7 @@ public class ChoosingLoanMenu {
                     System.out.println("++++++++++++++++++++++++++++++++");
                 }
                 System.out.println("all non paid bills");
-                List<Bill> allNonPaidBills = baseLoan.allNonPaidBillForALoan(loans.get(0).getId());
+                List<Bill> allNonPaidBills = baseLoan.allNonPaidBillForALoan(loans.get(id -1).getId());
                 if (allNonPaidBills != null) {
                     allNonPaidBills.forEach(bill -> {
                         System.out.println("bill id : " + bill.getId() + " ->>>>>>>> " + bill.getAmount() + "timeOf expire : " + bill.getExpiresDate());
@@ -165,9 +164,9 @@ public class ChoosingLoanMenu {
                     Integer billIdForPay = functions.stringIntegerFunction
                             .apply(functions.notAcceptNull.apply(scanner.nextLine()));
                     System.out.println("please enter the cart ");
-                    //String cart = functions.notAcceptNull.apply(scanner.nextLine());
+                    String cart = functions.notAcceptNull.apply(scanner.nextLine());
                     System.out.println("please enter the expiresDate ");
-                    //LocalDate localDate = functions.getCorrectLocalDate.apply(functions.notAcceptNull.apply(scanner.nextLine()));
+                    LocalDate localDate = functions.getCorrectLocalDate.apply(functions.notAcceptNull.apply(scanner.nextLine()));
                     System.out.println("please enter the cvv2 ");
                     String cvv2 = functions.checkCvv2
                      .apply(functions.notAcceptNull

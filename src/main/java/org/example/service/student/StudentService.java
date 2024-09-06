@@ -19,7 +19,7 @@ public interface StudentService {
     void setHousingLoan(Student student , LoanDto loanDto, SpouseDtoPerson spouseDtoPerson,
     HouseDto houseDto) throws NotQulifiedForThisLoan;
 
-    boolean validateStudentForGettingHousingLoan(Student student) throws NotQulifiedForThisLoan;
+    boolean validateStudentForGettingHousingLoan(Student student) throws NotQulifiedForThisLoan, ErrorItsNotTimeOfSignUp, CollegeFinished;
 
     boolean validateStudentForTuitionLoan(Student student)throws NotQulifiedForThisLoan
             , ErrorItsNotTimeOfSignUp, CollegeFinished;

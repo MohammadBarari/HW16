@@ -19,4 +19,6 @@ public record StudentSignUpDto(String name,
                                 , TypeOfMajor typeOfMajor
                                 , TypeOfCollege typeOfCollege
                                 , City city
+                               ,Boolean isMarried
+                               ,Boolean isInHotel
                                ){}

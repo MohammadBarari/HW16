@@ -1,6 +1,7 @@
 package org.example.menu;
 
-import org.example.Functions.Functions;
+import org.example.dto.StudentHousingLoanDto;
+import org.example.service.Functions.Functions;
 import org.example.domain.Student;
 import org.example.dto.StudentSignUpDto;
 import org.example.enumiration.City;
@@ -47,7 +48,14 @@ public class RegisterMenu {
             TypeOfCollege typeOfCollege = functions.typeOfCollegeFunction.apply(functions.notAcceptNull.apply(scanner.nextLine()));
             System.out.println("please enter the city : ");
             City city = functions.cityFunction.apply(functions.notAcceptNull.apply(scanner.nextLine()));
-            StudentSignUpDto studentSignUpDto = new StudentSignUpDto(name, family, motherName, fatherName, serialNumber, nationalCode, birthDay, studentNumber, CollegeName, dateOfEntrance, typeOfMajor, typeOfCollege, city);
+            System.out.println("please say if youre married or not married for married press 1 for not married press 2");
+            int marriedCount = functions.checkBoundries1to2.apply(functions.stringIntegerFunction.apply(functions.notAcceptNull.apply(scanner.nextLine())));
+            boolean married = marriedCount == 1;
+            System.out.println("please say if youre in hotel or not in hotel for hotel press 1 for not  press 2");
+            int hotelCount = functions.checkBoundries1to2.apply(functions.stringIntegerFunction.apply(functions.notAcceptNull.apply(scanner.nextLine())));
+            boolean isInHotel = marriedCount == 1;
+            StudentSignUpDto studentSignUpDto = new StudentSignUpDto(name, family, motherName, fatherName, serialNumber, nationalCode, birthDay, studentNumber, CollegeName, dateOfEntrance, typeOfMajor, typeOfCollege, city,
+                    married, isInHotel);
             try {
                 token = studentService.register(studentSignUpDto);
                 test = true;

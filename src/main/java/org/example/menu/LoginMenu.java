@@ -1,6 +1,6 @@
 package org.example.menu;
 
-import org.example.Functions.Functions;
+import org.example.service.Functions.Functions;
 import org.example.domain.Student;
 import org.example.dto.StudentLoginDto;
 import org.example.service.student.StudentService;
