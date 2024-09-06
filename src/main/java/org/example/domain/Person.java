@@ -45,6 +45,6 @@ public class Person implements Serializable {
 
     private String spouseNationalCode;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     private House house;
 }

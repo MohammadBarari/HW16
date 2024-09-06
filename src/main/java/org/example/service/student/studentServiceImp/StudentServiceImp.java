@@ -116,7 +116,7 @@ public class StudentServiceImp implements StudentService {
     @Override
     public void setHousingLoan(Student student, LoanDto loanDto
             , SpouseDtoPerson spouseDtoPerson,
-    HouseDto houseDto) throws NotQulifiedForThisLoan {
+    HouseDto houseDto) throws NotQulifiedForThisLoan, CollegeFinished, ErrorItsNotTimeOfSignUp {
         student.setSpouseNationalCode(spouseDtoPerson.spouseNationalCode());
         if (validateStudentForGettingHousingLoan(student)){
             Student student1 = findByNationalCode(spouseDtoPerson.nationalCode());
@@ -160,8 +160,8 @@ public class StudentServiceImp implements StudentService {
     @Override
     public boolean validateStudentForGettingHousingLoan(Student student) throws NotQulifiedForThisLoan, ErrorItsNotTimeOfSignUp, CollegeFinished {
         if (checkDate(LocalDate.now()) &&
-                studentStillInCollege(student) &&
-                student.getIsMarried() && student.getIsIntHotel() && checkSpouse(student)){
+                studentStillInCollege(student) && checkIfNotDuplicateLoanForTuition(student,TypeOfLoan.HOUSING)
+                &&student.getIsMarried() && student.getIsIntHotel() && checkSpouse(student)){
             return true;
         }
         throw new NotQulifiedForThisLoan();
@@ -197,14 +197,14 @@ public class StudentServiceImp implements StudentService {
     public boolean validateStudentForTuitionLoan(Student student) throws NotQulifiedForThisLoan,
             ErrorItsNotTimeOfSignUp, CollegeFinished {
         //todo: must do validating student here !!
-        if (ifCollegeIsPaid(student) && checkStudentThatCanGetLoan(student)){
+        if (ifCollegeIsPaid(student) && checkStudentThatCanGetLoan(student,TypeOfLoan.TUITION)){
             return true;
         }
         return false;
     }
     public boolean validateStudentForStudentLoan(Student student) throws
             CollegeFinished, NotQulifiedForThisLoan, ErrorItsNotTimeOfSignUp {
-        if (checkStudentThatCanGetLoan(student)){
+        if (checkStudentThatCanGetLoan(student,TypeOfLoan.STUDENTLOAN)){
             return true;
         }
         else return false;
@@ -215,33 +215,46 @@ public class StudentServiceImp implements StudentService {
 
     }
     //todo: pay bills finished
-    private boolean checkStudentThatCanGetLoan(Student student) throws CollegeFinished
+    private boolean checkStudentThatCanGetLoan(Student student , TypeOfLoan typeOfLoan) throws CollegeFinished
             , NotQulifiedForThisLoan, ErrorItsNotTimeOfSignUp {
         if (checkDate(LocalDate.now()) && studentStillInCollege(student)
-                && checkIfNotDuplicateLoanForTuition(student)){
+                && checkIfNotDuplicateLoanForTuition(student ,typeOfLoan)){
             return true;
         }
         return false;
     }
-    private boolean checkIfNotDuplicateLoanForTuition(Student student) throws NotQulifiedForThisLoan {
+    private boolean checkIfNotDuplicateLoanForTuition(Student student , TypeOfLoan typeOfLoan) throws NotQulifiedForThisLoan {
         List<Loan> loans = tuitionFeeLoanService.findLoan(student);
-        //todo : it will find all loans that student got
-        for (Loan loan : loans) {
-            if (loan.getTypeOfLoan() == TypeOfLoan.HOUSING){
-                throw new NotQulifiedForThisLoan();
-            }else if (loan.getTypeOfLoan() == TypeOfLoan.STUDENTLOAN || loan.getTypeOfLoan() == TypeOfLoan.TUITION ){
-                if (LocalDate.now().getYear() == loan.getDateOfGet().getYear()){
-                    if (!(ifDateIsCorrectForSecondDate(loan.getDateOfGet().toLocalDate()) && ifDateIsCorrectForFirstDate(LocalDate.now()))){
+        switch (typeOfLoan){
+            case TUITION,STUDENTLOAN ->{
+                for (Loan loan : loans) {
+                    if (loan.getTypeOfLoan() == TypeOfLoan.HOUSING){
                         throw new NotQulifiedForThisLoan();
+                    }else if (loan.getTypeOfLoan() == TypeOfLoan.STUDENTLOAN || loan.getTypeOfLoan() == TypeOfLoan.TUITION ){
+                        if (LocalDate.now().getYear() == loan.getDateOfGet().getYear()){
+                            if (!(ifDateIsCorrectForSecondDate(loan.getDateOfGet().toLocalDate()) && ifDateIsCorrectForFirstDate(LocalDate.now()))){
+                                throw new NotQulifiedForThisLoan();
+                            }
+                        }
+                        if (LocalDate.now().getYear()  == loan.getDateOfGet().getYear() + 1){
+                            if (ifDateIsCorrectForSecondDate(LocalDate.now()) && ifDateIsCorrectForFirstDate(loan.getDateOfGet().toLocalDate())){
+                                throw new NotQulifiedForThisLoan();
+                            }
+                        }
                     }
                 }
-                if (LocalDate.now().getYear()  == loan.getDateOfGet().getYear() + 1){
-                    if (ifDateIsCorrectForSecondDate(LocalDate.now()) && ifDateIsCorrectForFirstDate(loan.getDateOfGet().toLocalDate())){
+            }
+            case HOUSING -> {
+                for (Loan loan : loans) {
+                    if (loan.getTypeOfLoan() == TypeOfLoan.HOUSING) {
                         throw new NotQulifiedForThisLoan();
                     }
                 }
             }
+
         }
+        //todo : it will find all loans that student got
+
         //todo: we must check if the spouse of the student get house loan or not if yes we block this student of getting house loan
         return true;
     }
