@@ -23,6 +23,7 @@ public class HousingLoanServiceImp extends BaseLoanImp implements HousingLoanSer
         loan.setCartNumber(loanDto.cartNumber());
         loan.setDateOfGet(LocalDateTime.now());
         loan.setBill(billService.billsCalculator(calculateMoneyForStudentHousingLoan(student), LocalDate.now()));
+        saveLoan(loan);
         sendMoneyToStudent(student,calculateMoneyForStudentHousingLoan(student));
     }
 

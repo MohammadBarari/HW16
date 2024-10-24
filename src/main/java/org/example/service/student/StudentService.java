@@ -7,7 +7,7 @@ import org.example.exeptions.ErrorItsNotTimeOfSignUp;
 import org.example.exeptions.NotQulifiedForThisLoan;
 
 public interface StudentService {
-    void register(StudentSignUpDto student) throws Exception;
+    Student register(StudentSignUpDto student) throws Exception;
 
     void settingUserAndPassForStudent(Student student);
 
@@ -32,7 +32,7 @@ public interface StudentService {
     void PayTheBills(Student student);
 
     //todo: check whether if student is in three group that the question needed
-    Integer checkAllTypeOfStudentMajorType(Student student);
+
 
     Student findByNationalCode(String nationalCode);
 }

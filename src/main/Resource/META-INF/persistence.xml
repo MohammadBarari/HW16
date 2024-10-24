@@ -6,7 +6,7 @@
   <persistence-unit name="jpa">
     <properties>
       <property name="jakarta.persistence.jdbc.url"
-                value="jdbc:postgresql://localhost:5432/postgres?currentSchema=hw15"/>
+                value="jdbc:postgresql://localhost:5432/postgres?currentSchema=hw16_schema"/>
       <property name="jakarta.persistence.jdbc.user" value="postgres"/>
       <property name="jakarta.persistence.jdbc.password" value="myjava123"/>
       <property name="hibernate.show_sql" value="true"/>

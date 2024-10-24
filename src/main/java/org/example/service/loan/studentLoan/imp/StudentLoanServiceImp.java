@@ -22,6 +22,10 @@ public class StudentLoanServiceImp extends BaseLoanImp implements StudentLoanSer
         loan.setBill(
                 billService.billsCalculator(calculateMoneyStudentLoan(student) , dateOfGet)
         );
+        loan.setCartNumber(loanDto.cartNumber());
+        loan.setCv22(loan.getCv22());
+        loan.setCartExpiryDate(loanDto.expiresDate());
+        saveLoan(loan);
         //todo : tutionLoanRepository.save(Loan loan);
     }
 
@@ -31,11 +35,11 @@ public class StudentLoanServiceImp extends BaseLoanImp implements StudentLoanSer
     }
 
     public Long calculateMoneyStudentLoan(Student student){
-        if (studentService.checkAllTypeOfStudentMajorType(student) ==1){
+        if (checkAllTypeOfStudentMajorType(student) ==1){
             return 1_900_000L;
-        } else if (studentService.checkAllTypeOfStudentMajorType(student) ==2) {
+        } else if (checkAllTypeOfStudentMajorType(student) ==2) {
             return 2_250_000L;
-        } else if (studentService.checkAllTypeOfStudentMajorType(student) ==3) {
+        } else if (checkAllTypeOfStudentMajorType(student) ==3) {
             return 2_600_000L;
         }
         return 0L;

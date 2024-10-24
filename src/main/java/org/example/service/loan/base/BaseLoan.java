@@ -12,4 +12,5 @@ public interface BaseLoan {
     Boolean checkCartOfStudent(LoanDto loan , List<Loan> loans);
     List<Bill> allNonPaidBillForALoan(Integer loanId);
     List<Bill> allPaidBillForALoan(Integer loanId);
+    void saveLoan(Loan loan);
 }

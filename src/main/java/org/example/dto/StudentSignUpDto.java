@@ -1,5 +1,7 @@
 package org.example.dto;
 
+import org.example.enumiration.City;
+import org.example.enumiration.TypeOfCollege;
 import org.example.enumiration.TypeOfMajor;
 
 import java.time.LocalDate;
@@ -14,4 +16,7 @@ public record StudentSignUpDto(String name,
                             , String studentNumber
                                 , String CollegeName
                                , Integer dateOfEntrance
-                                , TypeOfMajor typeOfMajor){}
+                                , TypeOfMajor typeOfMajor
+                                , TypeOfCollege typeOfCollege
+                                , City city
+                               ){}

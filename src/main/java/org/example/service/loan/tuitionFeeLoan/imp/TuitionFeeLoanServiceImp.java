@@ -9,6 +9,7 @@ import org.example.service.loan.base.BaseLoanImp;
 import org.example.service.loan.tuitionFeeLoan.TuitionFeeLoanService;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 public class TuitionFeeLoanServiceImp extends BaseLoanImp implements TuitionFeeLoanService {
     TuitionFeeLoanRepository tuitionFeeLoanRepository;
@@ -21,10 +22,15 @@ public class TuitionFeeLoanServiceImp extends BaseLoanImp implements TuitionFeeL
         LocalDate dateOfGet = LocalDate.now();
         Loan loan = new Loan();
         loan.setStudent(student);
+        loan.setCartExpiryDate(loanDto.expiresDate());
+        loan.setCv22(loan.getCv22());
+        loan.setDateOfGet(LocalDateTime.now());
+        loan.setCartNumber(loanDto.cartNumber());
         loan.setTypeOfLoan(TypeOfLoan.TUITION);
         loan.setBill(
                 billService.billsCalculator(calculateMoneyForStudentTuitionFeeLoan(student) , dateOfGet)
         );
+        saveLoan(loan);
         //todo : tutionLoanRepository.save(Loan loan);
     }
 
@@ -33,11 +39,11 @@ public class TuitionFeeLoanServiceImp extends BaseLoanImp implements TuitionFeeL
     }
 
     public Long calculateMoneyForStudentTuitionFeeLoan(Student student) {
-        if (studentService.checkAllTypeOfStudentMajorType(student) ==1){
+        if (checkAllTypeOfStudentMajorType(student) ==1){
             return 1_000_000L;
-        } else if (studentService.checkAllTypeOfStudentMajorType(student) ==2) {
+        } else if (checkAllTypeOfStudentMajorType(student) ==2) {
             return 2_600_000L;
-        } else if (studentService.checkAllTypeOfStudentMajorType(student) ==3) {
+        } else if (checkAllTypeOfStudentMajorType(student) ==3) {
             return 65_000_000L;
         }
         return 0L;

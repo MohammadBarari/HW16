@@ -10,6 +10,7 @@ import org.example.enumiration.TypeOfLoan;
 import org.example.enumiration.TypeOfMajor;
 import org.example.exeptions.*;
 import org.example.repository.student.StudentRepository;
+import org.example.repository.student.imp.StudentRepositoryImp;
 import org.example.service.house.HouseService;
 import org.example.service.house.imp.HouseServiceImp;
 import org.example.service.loan.housingLoan.HousingLoanService;
@@ -24,17 +25,17 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
 import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.Function;
 
 public class StudentServiceImp implements StudentService {
-    StudentRepository studentRepository;
+    StudentRepository studentRepository = new StudentRepositoryImp();
     private TuitionFeeLoanService tuitionFeeLoanService = new TuitionFeeLoanServiceImp();
     private StudentLoanService studentLoanService =  new StudentLoanServiceImp();
     private HousingLoanService housingLoanService =  new HousingLoanServiceImp();
     private HouseService houseService =  new HouseServiceImp();
     @Override
-    public void register(StudentSignUpDto student) throws DuplicateStudentException {
-        if (studentDoesntExist(student)){
+    public Student register(StudentSignUpDto student) throws DuplicateStudentException {
             Student student1 = Student.builder().name(student.name())
                     .family(student.family())
                     .motherName(student.motherName())
@@ -46,9 +47,12 @@ public class StudentServiceImp implements StudentService {
             .CollegeName(student.CollegeName())
             .dateOfEntrance(student.dateOfEntrance())
             .typeOfMajor(student.typeOfMajor())
+                    .typeOfCollege(student.typeOfCollege())
+                    .city(student.city())
             .build();
-            studentRepository.save(student1);
-        }
+            settingUserAndPassForStudent(student1);
+            saveTheStudent(student1);
+            return student1;
     }
 
     @Override
@@ -58,7 +62,8 @@ public class StudentServiceImp implements StudentService {
         StringBuilder pass = new StringBuilder();
         for (int i = 0; i < 8; i++) {
             if (i == 0){
-                pass.append(integerCharacterFunction.apply(r.nextInt(1,6)));
+                pass.append(integerCharacterFunction.apply(
+                        ThreadLocalRandom.current().nextInt(1, 6)));
             }
             else if (i==1){
                 pass.append(r.nextInt(9));
@@ -100,9 +105,6 @@ public class StudentServiceImp implements StudentService {
                     studentLoanService.getStudentLoan(student,loanDto);
                 }
             }
-            case HOUSING -> {
-
-            }
         }
     }
 
@@ -113,8 +115,8 @@ public class StudentServiceImp implements StudentService {
         student.setSpouseNationalCode(spouseDtoPerson.spouseNationalCode());
         if (validateStudentForGettingHousingLoan(student)){
             Student student1 = findByNationalCode(spouseDtoPerson.nationalCode());
-            if (student1 == null){
-                SaveSpouce(spouseDtoPerson , student.getNationalCode());
+            if (student1.getStudentNumber() == null){
+                SaveSpouse(spouseDtoPerson , student.getNationalCode());
             }
             houseService.save(houseDto);
             housingLoanService.getHousingLoan(student,loanDto);
@@ -125,8 +127,9 @@ public class StudentServiceImp implements StudentService {
     public void setTheHotelAndOtherForStudentHousingLoan(Student student, StudentHousingLoanDto studentHousingLoanDto){
         student.setIsMarried(studentHousingLoanDto.isMarried());
         student.setIsIntHotel(studentHousingLoanDto.isIntHotel());
+        studentRepository.studentUpdate(student);
     }
-    private void SaveSpouce(SpouseDtoPerson spouseDtoPerson,String spouseNationalCode) {
+    private void SaveSpouse(SpouseDtoPerson spouseDtoPerson, String spouseNationalCode) {
         Person person = new Person();
         person.setName(spouseDtoPerson.name());
         person.setFamily(spouseDtoPerson.family());
@@ -136,13 +139,14 @@ public class StudentServiceImp implements StudentService {
         person.setNationalCode(spouseDtoPerson.nationalCode());
         person.setBirthDay(spouseDtoPerson.birthDay());
         person.setSpouseNationalCode(spouseNationalCode);
+        savePerson(person);
     }
 
     public Student saveTheStudent(Student student){
         studentRepository.save(student);
         return student;
     }
-    public Person savePerosn(Person person){
+    public Person savePerson(Person person){
         //todo: must save person here ;
         studentRepository.savePerson(person);
         return person;
@@ -182,27 +186,6 @@ public class StudentServiceImp implements StudentService {
         return studentRepository.findStudentByNationalCode(nationalCode);
     }
 
-    public Integer checkAllTypeOfStudentMajorType(Student student){
-        if (student.getTypeOfMajor() == TypeOfMajor.KARSHENASIARSHADPEYVASTE
-                ||student.getTypeOfMajor() == TypeOfMajor.KARSHENASIARSHADNAPEYVASTE
-                ||student.getTypeOfMajor() == TypeOfMajor.KRDANI
-        ){
-            return 1;
-        } else if (
-                student.getTypeOfMajor() == TypeOfMajor.DOKTORAHERFEE
-                        ||
-                        student.getTypeOfMajor() == TypeOfMajor.DOKTORAPEYVASTE
-                        ||
-                        student.getTypeOfMajor() == TypeOfMajor.KARSHENASIARSHADPEYVASTE
-        ) {
-            return 2;
-        } else if (
-                student.getTypeOfMajor() == TypeOfMajor.DOKTORANAPEVASTE
-        ) {
-            return 3;
-        }
-        return 0;
-    }
     @Override
     public boolean validateStudentForTuitionLoan(Student student) throws NotQulifiedForThisLoan,
             ErrorItsNotTimeOfSignUp, CollegeFinished {
@@ -241,12 +224,12 @@ public class StudentServiceImp implements StudentService {
                 throw new NotQulifiedForThisLoan();
             }else if (loan.getTypeOfLoan() == TypeOfLoan.STUDENTLOAN || loan.getTypeOfLoan() == TypeOfLoan.TUITION ){
                 if (LocalDate.now().getYear() == loan.getDateOfGet().getYear()){
-                    if (!(ifDateIsCorrectForSecondDate(loan.getDateOfGet()) && ifDateIsCorrectForFirstDate(LocalDate.now()))){
+                    if (!(ifDateIsCorrectForSecondDate(loan.getDateOfGet().toLocalDate()) && ifDateIsCorrectForFirstDate(LocalDate.now()))){
                         throw new NotQulifiedForThisLoan();
                     }
                 }
                 if (LocalDate.now().getYear()  == loan.getDateOfGet().getYear() + 1){
-                    if (ifDateIsCorrectForSecondDate(LocalDate.now()) && ifDateIsCorrectForFirstDate(loan.getDateOfGet())){
+                    if (ifDateIsCorrectForSecondDate(LocalDate.now()) && ifDateIsCorrectForFirstDate(loan.getDateOfGet().toLocalDate())){
                         throw new NotQulifiedForThisLoan();
                     }
                 }
@@ -294,10 +277,10 @@ public class StudentServiceImp implements StudentService {
     private boolean ifDateIsCorrectForFirstDate (LocalDate localDate){
         int year = localDate.getYear();
         if (localDate.isAfter(LocalDate.parse(
-                String.valueOf(year) + DateOfOpenAndCloseforLoanSignUp.FirstDateOfOpenLoanSignUp
+                (year) + DateOfOpenAndCloseforLoanSignUp.FirstDateOfOpenLoanSignUp
         )) &&
         localDate.isBefore(LocalDate.parse(
-                String.valueOf(year) + DateOfOpenAndCloseforLoanSignUp.firstDateOfCloseLoanSignUp
+                (year) + DateOfOpenAndCloseforLoanSignUp.firstDateOfCloseLoanSignUp
         ))){
             return true;
         }
@@ -307,10 +290,10 @@ public class StudentServiceImp implements StudentService {
     private boolean ifDateIsCorrectForSecondDate (LocalDate localDate){
         int year = localDate.getYear() ;
         if (localDate.isAfter(LocalDate.parse(
-                String.valueOf(year) + DateOfOpenAndCloseforLoanSignUp.secondDateOfOpenLoanSignUp
+                (year) + DateOfOpenAndCloseforLoanSignUp.secondDateOfOpenLoanSignUp
         )) &&
                 localDate.isBefore(LocalDate.parse(
-                        String.valueOf(year) + DateOfOpenAndCloseforLoanSignUp.secondDateOfCloseLoanSignUp
+                        (year) + DateOfOpenAndCloseforLoanSignUp.secondDateOfCloseLoanSignUp
                 ))){
             return true;
         }
@@ -345,11 +328,11 @@ public class StudentServiceImp implements StudentService {
         return null;
     };
 
-    private boolean studentDoesntExist(StudentSignUpDto student) throws DuplicateStudentException {
-        if(studentRepository.findByStudentNumber(student.studentNumber()) != null){
-            return true;
-        }
-        throw new DuplicateStudentException();
-    }
+//    private boolean studentDoesntExist(StudentSignUpDto student) throws DuplicateStudentException {
+//        if(studentRepository.findByStudentNumber(student.studentNumber()) != null){
+//            return true;
+//        }
+//        throw new DuplicateStudentException();
+//    }
 
 }
